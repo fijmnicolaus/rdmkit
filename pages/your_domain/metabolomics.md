@@ -2,7 +2,7 @@
 title: Metabolomics
 description: data management solutions for metabolomics and lipidomics data.
 contributors: [Nils Hoffmann]
-editors: []
+editors: [Franziska Nicolaus]
 page_id: metabolomics
 related_pages:
   Your_tasks: [metadata, data_quality, data_analysis, data_publication, identifiers, existing_data]
@@ -24,7 +24,7 @@ That closeness to phenotype is also what makes metabolomics data hard to manage.
 - Metabolite identification is uncertain, and that uncertainty is itself data. An annotation is only reusable if you also report how confident it is and what evidence supports it.
 - Data is heterogeneous. Nuclear magnetic resonance (NMR), liquid chromatography-mass spectrometry (LC-MS), gas chromatography-mass spectrometry (GC-MS) and direct infusion mass spectrometry all produce different raw data, most of it in proprietary vendor formats.
 
-This page covers the core data management practices for metabolomics and, in the final section, for lipidomics. Several neighbouring areas are only touched on briefly: mass spectrometry imaging and spatial metabolomics, where {% tool "imzml" %} and {% tool "metaspace" %} are the main entry points; exposomics, which shares its infrastructure with [toxicology data](toxicology_data); and fluxomics and volatilomics, which do not yet have mature community repositories or reporting standards.
+This page covers the core data management practices for metabolomics. The final section focuses on lipidomics, a branch of metabolomics dedicated to the analysis of lipids. Several neighbouring areas are only touched on briefly: mass spectrometry imaging and spatial metabolomics, where {% tool "imzml" %} and {% tool "metaspace" %} are the main entry points; exposomics, which shares its infrastructure with [toxicology data](toxicology_data); and fluxomics and volatilomics, which do not yet have mature community repositories or reporting standards.
 
 Much of what follows is shared with mass spectrometry-based [proteomics](proteomics). If you work across both, read the two pages together.
 
@@ -153,7 +153,14 @@ Deposit the raw data, not just the processed table. Raw spectra can be reprocess
 
 Lipidomics is the branch of metabolomics concerned with lipids. It shares its repositories, its file formats and most of its tooling with the rest of metabolomics, which is why it is covered here rather than on a page of its own: you deposit to the same places, in the same formats, and process with many of the same tools.
 
-What is genuinely different is naming. A lipid name is not a stable identifier but a statement about **how much structural detail the measurement actually resolved**. `PC 34:1` says only that a phosphatidylcholine with 34 carbons and one double bond was detected. `PC 16:0_18:1` additionally names the two fatty acyl chains but does not say which is at which position. `PC 16:0/18:1` assigns those positions. `PC 16:0/18:1(9Z)` further locates the double bond and its geometry. These are four different levels of structural detail, and reporting at a level higher than your assay supports is a data integrity problem, not a stylistic one.
+What is genuinely different is the naming. A lipid name is not a stable identifier but a statement about **how much structural detail the measurement actually resolved**. Under lipid nomenclature standards, the name expands as more structural detail becomes known. `PC 34:1` says only on a species level that a phosphatidylcholine with 34 carbons and one double bond was detected. `PC 16:0_18:1` additionally names on a molecular species level the two fatty acyl chains but does not say which one is at which position. `PC 16:0/18:1` assigns those positions on a positional level. `PC 16:0/18:1(9Z)` further locates the double bond and its geometry on a full structure level. These are four different levels of structural detail, and reporting at a level higher than your assay supports is a data integrity problem, not a stylistic one.
+
+| Nomenclature level | Notation example | Structural information |
+|--------------------|------------------|------------------------|
+| Species Level | `PC 34:1` | Headgroup, N carbons, N double bonds. |
+| Molecular Species Level | `PC 16:0_18:1` | Headgroup, specific chain lengths with unknown position (`_`). |
+| Positional Level | `PC 16:0/18:1` | Headgroup, specific chain length, specific positions (`/`) and unknown double bond position. |
+| Full Structure Level | `PC 16:0/18:1(9Z)` | Headgroup, specific chain length, specific positions (`/`) and location and orientation of double bonds. |
 
 ### Considerations
 
