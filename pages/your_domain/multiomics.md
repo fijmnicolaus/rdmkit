@@ -3,7 +3,7 @@ title: Multi-omics
 search_exclude: true
 description: data management solutions for studies that combine several omics modalities.
 contributors: [Nils Hoffmann]
-editors: []
+editors: [Franziska Nicolaus]
 page_id: multiomics
 related_pages:
   Your_tasks: [data_interlinking, metadata, identifiers, data_analysis, existing_data]
@@ -16,9 +16,11 @@ training:
 
 ## Introduction
 
-A multi-omics study measures the same biological material with several different technologies, in the hope that the combination says more than the parts. A cohort might be sequenced, its proteome and metabolome profiled by mass spectrometry, and its tissue imaged. The scientific promise is obvious. The data management problem is that you are not managing one dataset but several, each belonging to a different technical community, with its own formats, its own repositories, its own reporting checklists and its own idea of what a result even is.
+In life sciences, the so-called _omics revolution_ has transformed the way biological systems are studied. Omics describe the large-scale study of biological entities, such as genes (genomics), transcripts (transcriptomics), proteins (proteomics), and metabolites (metabolomics). Rather than focusing on individual levels, modern research increasingly integrates multiple omics layers within a single study to obtain a more holistic understanding of biological systems.
 
-It is useful to group omics technologies into three families, because the data management consequences follow from the family rather than from the individual assay:
+A multi-omics study measures the same biological material using several different omics technologies, with the aim of obtaining biological insights that cannot be achieved through any single omics approach alone. For instance, a cohort might be sequenced, its proteome and metabolome profiled by mass spectrometry, and its tissue imaged. Although integrating multiple omics layers can provide a better understanding of biological systems, it also increases the complexity of data management. Instead of a single dataset, multiple datasets have to be managed within one study, each belonging to a different technical community, with its own formats, its own repositories, its own reporting checklists and even its own idea of the definition of a result.
+
+Omics technologies can be grouped into three families, each with distinct data management requirements that are mainly independent of the individual assay:
 
 - **Sequence-based omics**, such as genomics, transcriptomics and epigenomics. Data is read out as sequence, aligned to a reference, and reported as features on coordinates.
 - **Mass spectrometry and NMR-based omics**, such as proteomics, metabolomics and lipidomics. Data is read out as spectra, and the molecules present are *inferred* from those spectra.
@@ -26,15 +28,16 @@ It is useful to group omics technologies into three families, because the data m
 
 ### Why integration is hard
 
-The usual explanation is that the formats differ, the scales differ and the files are large. All true, and all tractable. The deeper problem is that **the three families do not establish the identity of an entity in the same way**, and this is what makes a naive join across them dangerous.
+A common explanation for the challenges of integrating multiple omics layers is the differences in the formats, the scales and the file size between the families. While these differences are important to consider, a deeper challenge is that **the three families do not establish the identity of an entity in the same way**, making a naive integration across them dangerous.
 
-- In a sequence-based experiment, an entity is **template-derived**. A gene, a transcript or a variant is defined by its position on a reference genome. Two laboratories analysing the same sample will name the same entity the same way. The identifier is stable, and the uncertainty is mostly technical: coverage, mapping quality, and so on.
-- In a mass spectrometry or NMR experiment, an entity is **inferred**. A protein or a metabolite identification is a probabilistic claim supported by evidence, and it comes with a confidence level attached. In metabolomics there is no reference to align against at all, and a large fraction of detected features are never identified. The uncertainty is in the identity itself, not merely in its measurement.
-- In an imaging or spatial experiment, an entity is **constructed**. A cell, a region or a compartment exists because a segmentation step drew a boundary. Change the segmentation parameters and you change the entities. The identity is an output of your analysis, not an observation.
+- In a sequence-based experiment, an entity is **template-derived**. A gene, a transcript or a variant is defined by its position on a reference genome. Two laboratories analysing the same sample will name the same entity equally. The identifier is stable, and the uncertainty is mostly technical through differences in the coverage, mapping quality, and so on.
+- In a mass spectrometry or NMR experiment, an entity is **inferred**. A protein or a metabolite identification is a probabilistic claim supported by evidence, with an attached confidence level. In metabolomics, a reference to align against does not exist at all, and a large fraction of detected features remain unidentified. The uncertainty lies in the identity itself, not merely in its measurement.
+- In an imaging or spatial experiment, an entity is **constructed**. A cell, a region, or a compartment exists because a segmentation step drew a boundary. A change the segmentation parameters also changes the entities. The identity is an output of your analysis, not an observation.
 
-So when you build a matrix that puts a gene, a metabolite and a cell in the same table, the row keys have different epistemic status. The gene identifier is close to a fact. The metabolite identifier is a hypothesis with a stated confidence level. The cell identifier is an artefact of a pipeline. Integration methods that treat all three as equally reliable keys will produce results that look more certain than they are.
+Therefore, when a matrix is built that contains a gene, a metabolite and a cell, the row keys have different epistemic status. The gene identifier is well-defined and unambiguous. The metabolite identifier is a hypothesis with a stated confidence level. The cell identifier is an artefact of a pipeline. Integration methods that treat all three as equally reliable keys risk producing results that appear more certain than they actually are.
 
-Two practical consequences run through the rest of this page. First, **the sample is the only thing every modality genuinely shares**, so sample identity and provenance are where multi-omics data management has to invest. Second, **the fragmentation of repositories and standards is not a defect to be fixed but a fact to be managed**: you deposit each modality in its proper home and link the parts, rather than looking for a single repository that takes everything.
+As a result, two key consequences have to be considered. First, **the sample is the only entity that is shared across all modalities**, making the sample identity and provenance the foundations of multi-omics data management. Second, **the fragmentation of repositories and standards is not a defect to be fixed but a fact to be managed**: each modality should be deposited in its respective repository linking to each other, rather than storing everything in a single repository.
+
 
 ### Related pages
 
@@ -48,43 +51,43 @@ This page covers what is specific to *combining* modalities. For the modalities 
 
 ### Description
 
-If a multi-omics study has a single point of failure, this is it. The assays were run on aliquots of the same biological material, possibly in different laboratories, months apart, by people who never spoke to each other. The join across modalities is only as good as your ability to say, unambiguously and in a machine-readable way, that this proteomics injection and that sequencing run came from the same specimen.
+If there is a single point of failure in a multi-omics study, it is the consistent identification of samples across all omics modalities. For instance, the different assays are performed on aliquots of the same biological material, but are generated in different laboratories, at different times, and by independent research teams. Consequently, the relationship between datasets cannot be identified from the measurements themselves. Instead, successful integration depends on preserving an unambiguous, machine-readable link that identifies which sequencing dataset, proteomics measurement, metabolomics analysis, or imaging experiment originated from the same biological specimen.
 
-In practice this is where multi-omics studies break. A sample called `P17-liver-2` in the sequencing facility's spreadsheet and `Pat17_Lv_B` in the mass spectrometry laboratory's notebook is a broken join, and it usually cannot be repaired after the fact. See also the general [identifiers](identifiers) page.
+In practice, this is often the point where multi-omics studies break. A sample called `P17-liver-2` in the sequencing facility's spreadsheet and `Pat17_Lv_B` in the mass spectrometry laboratory's notebook is a broken join, and it usually cannot be repaired after the fact. See also the general [identifiers](identifiers) page.
 
 ### Considerations
 
 - Does every physical sample have a single, persistent identifier that every modality uses, or does each laboratory maintain its own naming?
-- Can you reconstruct the chain from organism, to specimen, to aliquot, to the individual measurement, for each modality?
+- Can you reconstruct for each modality the chain from organism to specimen, aliquot, and the individual measurement?
 - Are the aliquots for different modalities recorded as siblings of a common parent sample, or as unrelated samples?
 - Is the sample metadata (the organism, the tissue, the treatment, the time point) recorded once, or duplicated and allowed to drift between modalities?
 
 ### Solutions
 
-- Assign persistent sample identifiers up front and use them everywhere. {% tool "biosamples" %} at EMBL-EBI provides accessions for biological samples that the modality-specific repositories can all reference, which makes it the natural anchor for a multi-omics study.
-- Model the sample hierarchy explicitly, rather than flattening it. The organism, the specimen taken from it, and the aliquots taken from that specimen are different things, and the aliquots sent to different modalities are siblings. {% tool "isa-tools" %} and its Investigation-Study-Assay model are designed for exactly this: one investigation, several studies, many assays, with the sample lineage recorded once.
-- Record sample metadata once, in the study-level description, and let each assay reference it. Duplicating the tissue and treatment fields into three modality-specific spreadsheets guarantees they will eventually disagree.
-- Describe samples with shared ontologies so that the same tissue means the same thing in every modality. Use {% tool "edam" %} for data and operations, and reach for community ontologies through the {% tool "ontology-lookup-service" %} or {% tool "bioportal" %}.
+- Assign persistent sample identifiers up front and use them consistently. {% tool "biosamples" %} at EMBL-EBI provides accessions for biological samples that the modality-specific repositories can all reference, which makes it the natural anchor for a multi-omics study.
+- Model the sample hierarchy explicitly, rather than reducing it to a single level. The organism, the collected specimen, and the aliquots distributed to different omics assays represent distinct entities. Aliquots analysed by different modalities are therefore sibling samples with a shared origin {% tool "isa-tools" %} and its Investigation-Study-Assay model are designed to capture the hierarchy, representing one investigation, several studies, and many assays, with the sample lineage recorded once.
+- Record sample metadata once at the study level description and let each assay reference it. Information duplication, such as tissue type and treatment, across modality-specific metadata leads to inconsistencies and makes it difficult to maintain a single precise description of the sample.
+- Describe samples with shared ontologies, so that the same tissue can be easily identified across all modalities without requiring modality-specific knowledge. Use {% tool "edam" %} for data and operations, and reach for community ontologies through the {% tool "ontology-lookup-service" %} or {% tool "bioportal" %}.
 
 ## Working across the three modality families
 
 ### Description
 
-Each family has its own mature ecosystem, and the right approach is to use each one properly rather than to invent a common denominator. What follows is a short orientation to each, with pointers to the RDMkit pages that cover them in depth.
+Each family has its own mature ecosystem, and rather than inventing an additional common denominator that would only add complexity, it is preferable to use each one properly. The following sections provide a brief orientation to each ecosystem, with pointers to the respective RDMkit pages that cover each topic in depth.
 
 <!--- REVIEWER NOTE: this section is deliberately an orientation, not a tutorial. The depth
 belongs on the individual domain pages, which are linked. Please push back if it strays. --->
 
 ### Considerations
 
-- For each modality in your study, what is the community's open format, its reporting checklist and its deposition database?
+- For each modality in your study, what is the community's open format, its reporting checklist, and its deposition database?
 - Are you producing open formats from the start, or planning to convert proprietary output later?
 - Which modality has the most restrictive constraints, particularly if human data is involved, and does that constrain the whole study?
 - Do the modalities in your study have compatible ideas of what a replicate is?
 
 ### Solutions
 
-**Sequence-based omics.** Data is read out as sequence and reported against a reference. The formats are stable and near-universal (FASTA, FASTQ, and alignment and variant formats), the reporting checklists are mature, and deposition is well established. Deposit raw sequence in the {% tool "european-nucleotide-archive" %} or the {% tool "sequence-read-archive" %}, functional genomics data in {% tool "arrayexpress" %} or the {% tool "gene-expression-omnibus" %}, and human data subject to controlled access in the {% tool "the-european-genome-phenome-archive" %}. Describe experiments against {% tool "minseqe" %}, and, for environmental and host-associated samples, {% tool "mixs" %} — see [marine metagenomics](marine). Plant studies have their own checklist in {% tool "miappe" %}; see [plant sciences](plants). For per-cell resolution, which brings its own container formats and its own integration problems, see [single-cell sequencing](single_cell_sequencing), and for RNA modifications see [epitranscriptome data](epitrans). This is the best-served of the three families; if part of your study is sequence-based, that part is unlikely to be your problem.
+**Sequence-based omics.** Data is read out as sequence and reported against a reference. The formats are stable and near-universal (FASTA, FASTQ, and alignment and variant formats), the reporting checklists are mature, and deposition is well established. Deposit raw sequence in the {% tool "european-nucleotide-archive" %} or the {% tool "sequence-read-archive" %}, functional genomics data in {% tool "arrayexpress" %} or the {% tool "gene-expression-omnibus" %}, and human data subject to controlled access in the {% tool "the-european-genome-phenome-archive" %}. Describe experiments against {% tool "minseqe" %}, and, for environmental and host-associated samples, {% tool "mixs" %} — see [marine metagenomics](marine). Plant studies have their own checklist in {% tool "miappe" %}; see [plant sciences](plants). For per-cell resolution, which brings its own container formats and its own integration problems, see [single-cell sequencing](single_cell_sequencing), and for RNA modifications see [epitranscriptome data](epitrans). This is the best-served of the three families; If part of a study is sequence-based, this modality most likely does not lead to many data management issues.
 
 **Mass spectrometry and NMR-based omics.** Data is read out as spectra and the molecules are inferred from them. Convert vendor output to the open standard {% tool "mzml" %} using {% tool "msconvert" %} as soon as it comes off the instrument, and use {% tool "nmrml" %} for NMR. Report results in {% tool "mztab-m" %} for metabolomics. Deposit proteomics data through {% tool "proteomexchange" %} and {% tool "pride" %}, and metabolomics data in {% tool "metabolights" %} or {% tool "metabolomics-workbench" %}. The critical point for integration is that **every identification carries a confidence level**, and that level must survive into your integrated dataset. See the [proteomics](proteomics) and [metabolomics](metabolomics) pages.
 
@@ -94,11 +97,11 @@ belongs on the individual domain pages, which are linked. Please push back if it
 
 ### Description
 
-There is no single multi-omics metadata standard, and there is unlikely to be one. Each community has built what it needed: minimum-information checklists, controlled vocabularies and exchange formats, all tuned to its own technology.
+There is no single multi-omics metadata standard, and there is unlikely to be one. Each community has built the standards it needs: minimum-information checklists, controlled vocabularies and exchange formats, all tuned to its own technology.
 
-The scale of this is worth seeing plainly. The Research Data Alliance's Multi-Omics Metadata Standards Interoperability working group maintains a catalogue of the standards in use across omics. It currently lists roughly 97 standards for genomics, 47 for proteomics and 54 for metabolomics — and a further 69 that it classifies as *universal*, meaning they are not tied to any one technology.
+The scale of this fragmentation is worth seeing plainly. The Research Data Alliance's Multi-Omics Metadata Standards Interoperability working group maintains a catalogue of the standards in use across omics. It currently lists roughly 97 standards for genomics, 47 for proteomics and 54 for metabolomics — and a further 69 that it classifies as *universal*, meaning they are not tied to a single technology.
 
-That last group is the important one. **Interoperability across omics does not happen at the level of the technology-specific standards. It happens at the universal layer**: the identifiers, the ontologies, the packaging formats and the study-level descriptions that all modalities can share. Those are what you should invest in.
+That final group is particular important. **Interoperability across omics does not happen at the level of the technology-specific standards. It happens at the universal layer**: the identifiers, the ontologies, the packaging formats and the study-level descriptions that all modalities can share. These are the elements where investment has the greatest impact.
 
 <!--- REVIEWER NOTE: the MOMSI catalogue currently has NO records for microscopy, spatial or
 bioimaging standards (its sections are genomics, proteomics, metabolomics and universal; the
@@ -129,9 +132,9 @@ MOMSI adds an imaging section. --->
 
 ### Description
 
-Omics repositories are technology-specific by design, and this is correct: a repository that accepted everything would be able to validate nothing. The consequence is that a multi-omics study is necessarily **fragmented across several repositories**, and the data management task is not to avoid that fragmentation but to make the pieces findable from one another.
+Omics repositories are technology-specific by design, as a repository that accepted everything would be able to validate nothing. As a consequence, multi-omics studies are necessarily **fragmented across several repositories**, and the data management challenge is not to avoid this fragmentation but to ensure that the individual components remain traceable across repositories.
 
-This problem is generic enough to have its own RDMkit page. Read [data interlinking](data_interlinking) for the detailed guidance; what follows is only the multi-omics-specific framing.
+This problem is generic enough to have its own RDMkit page. Read [data interlinking](data_interlinking) for the detailed guidance; in the following, only multi-omics-specific considerations and solutions are listed.
 
 ### Considerations
 
@@ -143,7 +146,7 @@ This problem is generic enough to have its own RDMkit page. Read [data interlink
 ### Solutions
 
 - Deposit each modality in its proper technology-specific repository. Do not attempt to force a multi-modal study into a single archive, and do not fall back on a generic repository merely because your study spans modalities.
-- Create a study-level record that ties the parts together. {% tool "biostudies" %} at EMBL-EBI exists for this: it holds the description of a study and links out to the datasets held in the modality-specific databases, which gives your study one citable entry point.
+- Create a study-level record that ties the parts together. For this purpose, {% tool "biostudies" %} at EMBL-EBI holds the description of a study and links out to the datasets held in the modality-specific databases, which gives your study one citable entry point.
 - Cross-reference the accessions in both directions, so that each deposit names the others. A one-way link is half a link.
 - Anchor everything on the sample accessions from {% tool "biosamples" %}, so the join across repositories is explicit rather than inferred from sample names.
 - Use {% tool "omicsdi" %} to discover existing multi-omics datasets. It indexes datasets across genomics, transcriptomics, proteomics and metabolomics, and is the most practical starting point when looking for public data to integrate with your own. See [existing data](existing_data).
@@ -153,9 +156,9 @@ This problem is generic enough to have its own RDMkit page. Read [data interlink
 
 ### Description
 
-Integration is where the differences between the modality families stop being an abstraction. The modalities have different dynamic ranges, different missingness, different batch structures and different noise models. Sequencing depth, mass spectrometry drift and microscope illumination are not the same kind of nuisance variable, and a batch correction that is right for one is meaningless for another.
+Integration is where the differences between the omics modality families become practically relevant. Each modality has its own dynamic range, patterns of missing data, batch effects, and sources of technical variation. For example, sequencing depth, mass spectrometry signal drift, and variations in microscope illumination represent fundamentally different technical biases that require modality-specific approaches.
 
-There is no single correct integration method, and the field is moving quickly. What is stable, and what belongs on this page, is the data management practice around the analysis. See also the general [data analysis](data_analysis) page.
+Consequently, there is no single integration method that is appropriate for all multi-omics studies, and the field continues to evolve rapidly. What remains stable, however, is the data management practice around the analysis. See also the general [data analysis](data_analysis) page.
 
 ### Considerations
 
