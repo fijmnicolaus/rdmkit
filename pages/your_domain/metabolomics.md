@@ -1,8 +1,8 @@
 ---
 title: Metabolomics
 description: data management solutions for metabolomics and lipidomics data.
-contributors: [Nils Hoffmann]
-editors: [Franziska Nicolaus]
+contributors: [Nils Hoffmann, Franziska Nicolaus]
+editors: []
 page_id: metabolomics
 related_pages:
   Your_tasks: [dmp, metadata, data_quality, storage, data_analysis, data_provenance, data_publication, data_interlinking, identifiers, existing_data]
