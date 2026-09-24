@@ -190,12 +190,12 @@ Lipidomics is the branch of metabolomics concerned with lipids. It shares its re
 
 What is genuinely different is the naming. A lipid name is not a stable identifier but a statement about **how much structural detail the measurement actually resolved**: under the shorthand nomenclature, the name grows as more of the structure is known {% cite liebisch2020Update %}. The table below shows the most common levels for the same phosphatidylcholine. Reporting at a level higher than your assay supports is a data integrity problem, not a stylistic one.
 
-| Nomenclature level | Notation example | Structural information |
-|--------------------|------------------|------------------------|
-| Species Level | `PC 34:1` | Headgroup, N carbons, N double bonds. |
-| Molecular Species Level | `PC 16:0_18:1` | Headgroup, specific chain lengths with unknown position (`_`). |
-| Positional Level | `PC 16:0/18:1` | Headgroup, specific chain length, specific positions (`/`) and unknown double bond position. |
-| Full Structure Level | `PC 16:0/18:1(9Z)` | Headgroup, specific chain length, specific positions (`/`) and location and orientation of double bonds. |
+| Level | Example | What the name tells you |
+|---|---|---|
+| Species | `PC 34:1` | Lipid class, and the total number of carbon atoms and double bonds across all chains |
+| Molecular species | `PC 16:0_18:1` | The individual fatty acyl chains, but not their positions on the glycerol backbone (`_`) |
+| sn-position | `PC 16:0/18:1` | The positions of the chains (`/`), but not where the double bond is |
+| Full structure | `PC 16:0/18:1(9Z)` | The position and geometry of each double bond |
 
 ### Considerations
 
